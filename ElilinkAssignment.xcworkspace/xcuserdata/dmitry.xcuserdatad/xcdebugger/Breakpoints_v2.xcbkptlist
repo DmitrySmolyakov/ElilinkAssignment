@@ -6,16 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ElilinkAssignment/AppDelegate.m"
-            timestampString = "488974031.415823"
+            filePath = "ElilinkAssignment/DSLabel.m"
+            timestampString = "489008685.810004"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "-setupFirstLaunch"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "-updateFonts:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

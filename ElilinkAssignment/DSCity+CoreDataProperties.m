@@ -15,8 +15,8 @@
 
 @dynamic cityDescription;
 @dynamic code;
-@dynamic name;
 @dynamic lastUpdatedWeatherDate;
+@dynamic name;
 @dynamic weather;
 
 @end

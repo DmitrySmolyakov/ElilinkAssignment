@@ -13,6 +13,7 @@
 
 //frameworks
 #import <MagicalRecord/MagicalRecord.h>
+#import <AFNetworkActivityIndicatorManager.h>
 
 //models
 #import "DSCity.h"
@@ -27,6 +28,9 @@ static NSString * const kFirstLaunch = @"firstLaunch";
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     [MagicalRecord setShouldDeleteStoreOnModelMismatch:YES];
     [MagicalRecord setupCoreDataStack];
@@ -70,7 +74,7 @@ static NSString * const kFirstLaunch = @"firstLaunch";
     NSDictionary* citiesDictionary = [NSDictionary dictionaryWithContentsOfJSONString:@"cities.json"];
     NSArray *citiesArrya = [citiesDictionary objectForKey:@"cities"];
     
-    [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         for (NSDictionary *dictionary in citiesArrya) {
             [[DSCity alloc] createWithDictionary:dictionary InContext:localContext];
         }

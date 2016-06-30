@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DSCity : NSManagedObject
 
 - (void)createWithDictionary:(NSDictionary *)dictionary InContext:(NSManagedObjectContext *)localContext;
-// Insert code here to declare functionality of your managed object subclass
+- (void)updateWeatherWithDictionary:(NSDictionary *)dictionary;
 
 @end
 

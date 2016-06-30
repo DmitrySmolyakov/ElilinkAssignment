@@ -19,7 +19,16 @@
     city.name = dictionary[@"name"];
     city.code = dictionary[@"code"];
     city.cityDescription = dictionary[@"description"];
+}
+
+- (void)updateWeatherWithDictionary:(NSDictionary *)dictionary {
     
+    NSDictionary *mainDictionary = [dictionary objectForKey:@"main"] ? dictionary[@"main"] : nil;
+    NSNumber *weather = [mainDictionary objectForKey:@"temp"] ? [mainDictionary objectForKey:@"temp"] : nil;
+    if (weather) {
+        self.weather = weather;
+        self.lastUpdatedWeatherDate = [NSDate date];
+    }
 }
 
 // Insert code here to add functionality to your managed object subclass

@@ -10,15 +10,16 @@
 
 //frameworks
 #import <MagicalRecord/MagicalRecord.h>
+#import <OWMWeatherAPI.h>
 
 //models
 #import "DSCity.h"
 
 @interface ViewController () <NSFetchedResultsControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descriptionViewHeightConst;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *cityNameStandartHeightConst;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *cityNameZoomedHeightConst;
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *zoomedStateConst;
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *defaultStateConst;
+
 
 @property (assign, nonatomic) NSInteger status;
 
@@ -27,10 +28,12 @@
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (nullable, weak, nonatomic, readonly) NSArray <DSCity *> *cities;
-
+@property (strong, nonatomic) NSArray *cities;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;
+
+@property (assign, nonatomic) UIInterfaceOrientation currentOrientation;
+
+@property (strong, nonatomic) OWMWeatherAPI *owmWeatherAPI;
 
 - (IBAction)actionTap:(UITapGestureRecognizer *)sender;
 
@@ -41,55 +44,79 @@ typedef NS_ENUM(NSInteger, ViewControllerDescriptionViewStatus) {
     ViewControllerDescriptionViewStatusZoomed
 };
 
-static const CGFloat descriptionViewHeightMultiplierStateDefault = 0.33f;
-static const CGFloat descriptionViewHeightMultiplierStateZoomed = 0.6f;
+static const NSInteger weatherUpdateInterval = 3600; //one hour
 
 @implementation ViewController
+
+#pragma mark - Setters
+
+- (void)setStatus:(NSInteger)status {
+    _status = status;
+    [self updateConstraintToState];
+}
 
 #pragma mark - Life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self performFetch];
+    [self loadData];
+    [self setupWeatherAPI];
+    [self updateDescriptionViewWithIndexPath:self.selectedIndexPath];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    [self setupConstraints];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - FetchedResultsController
-
-- (NSFetchedResultsController *)fetchedResultsController {
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
-    
-    NSFetchRequest *fetchRequest = [DSCity MR_requestAllSortedBy:@"name" ascending:YES];
-    
-    NSFetchedResultsController *theFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[NSManagedObjectContext MR_defaultContext] sectionNameKeyPath:nil cacheName:nil];
-    _fetchedResultsController = theFetchedResultsController;
-    _fetchedResultsController.delegate = self;
-    return _fetchedResultsController;
-}
-
-- (void)performFetch {
-    
-    NSError *error;
-    if (![[self fetchedResultsController] performFetch:&error]) {
-        // Update to handle the error appropriately.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    if ([[UIApplication sharedApplication] statusBarOrientation] != self.currentOrientation) {
+        self.currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        [self updateConstraintToState];
     }
 }
 
-- (NSArray <DSCity *> *)cities {
-    return self.fetchedResultsController.fetchedObjects;
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self selecDefaultIndexPath];
+}
+
+#pragma mark - Setup
+
+- (void)loadData {
+    self.cities = [DSCity MR_findAllSortedBy:@"name" ascending:YES];
+}
+
+- (void)setupWeatherAPI {
+    
+    self.owmWeatherAPI = [[OWMWeatherAPI alloc] initWithAPIKey:@"eba47effea88b18d5b67eae531209447"];
+    [self.owmWeatherAPI setTemperatureFormat:kOWMTempCelcius];
+}
+
+- (void)selecDefaultIndexPath {
+    if (!self.selectedIndexPath) {
+        NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionBottom];
+        [self rowDidSelectedAtIndexPath:indexPath];
+    }
+}
+
+#pragma mark - Constraints
+
+- (void)updateConstraintToState {
+    
+    if (self.status == ViewControllerDescriptionViewStatusDefault) {
+        for (NSLayoutConstraint *constraints in self.zoomedStateConst) {
+            constraints.active = NO;
+        }
+        for (NSLayoutConstraint *constraints in self.defaultStateConst) {
+            constraints.active = YES;
+        }
+    }
+    else if (self.status == ViewControllerDescriptionViewStatusZoomed){
+        for (NSLayoutConstraint *constraints in self.defaultStateConst) {
+            constraints.active = NO;
+        }
+        for (NSLayoutConstraint *constraints in self.zoomedStateConst) {
+            constraints.active = YES;
+        }
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -118,116 +145,56 @@ static const CGFloat descriptionViewHeightMultiplierStateZoomed = 0.6f;
     
     DSCity *city = self.cities[indexPath.row];
     cell.textLabel.text = city.name;
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     cell.detailTextLabel.text = city.code;
+    cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }
 
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (self.selectedIndexPath != indexPath) {
-        self.selectedIndexPath = indexPath;
-        [self updateDescriptionViewWithIndexPath:indexPath];
-    }
+    [self rowDidSelectedAtIndexPath:indexPath];
 }
-
 
 #pragma mark - UI updates
-
-- (void)setupConstraints {
-    self.descriptionViewHeightConst.constant = CGRectGetHeight(self.view.bounds) * descriptionViewHeightMultiplierStateDefault;
-    self.status = ViewControllerDescriptionViewStatusDefault;
-}
 
 - (void)updateDescriptionViewWithIndexPath:(NSIndexPath *)indexPath {
     
     DSCity *city = self.cities[indexPath.row];
     self.cityNameCodeLabel.text = [NSString stringWithFormat:@"%@\n%@", city.name, city.code];
-    self.weatherLabel.text = city.weather ? city.weather : @"No data";
     self.descriptionTextView.text = city.cityDescription;
-}
-
-
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView beginUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                          withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                          withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        default:
-            return;
+    if (city.lastUpdatedWeatherDate) {
+        NSString *stringWeather = [NSString stringWithFormat:@"%0.1f", [city.weather floatValue]];
+        self.weatherLabel.text = [stringWeather stringByAppendingString:@"ºC"];
+    }
+    else {
+        self.weatherLabel.text = @"No info";
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
+#pragma mark - WeatherSync
+
+- (void)syncWeatherWithServer:(DSCity *)city {
     
-    UITableView *tableView = self.tableView;
-    
-    switch(type) {
-            
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                             withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                             withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath]
-                    atIndexPath:indexPath];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                             withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                             withRowAnimation:UITableViewRowAnimationFade];
-            break;
+    if ([self weatherWasUpdatedEarlierThanAnHourAgo:(DSCity *)city]) {
+        NSString *cityName = [city.name stringByReplacingOccurrencesOfString:@" " withString:@""]; // check for space in name
+        [self.owmWeatherAPI currentWeatherByCityName:cityName withCallback:^(NSError *error, NSDictionary *result) {
+
+            [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
+                DSCity *cityInLocalContext = [DSCity MR_findFirstByAttribute:@"name" withValue:city.name inContext:localContext];
+                [cityInLocalContext updateWeatherWithDictionary:result];
+            } completion:^(BOOL contextDidSave, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self updateDescriptionViewWithIndexPath:self.selectedIndexPath];
+                });
+            }];
+        }];
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView endUpdates];
-}
-
-
-#pragma mark - Animations
-
-- (void)animateConstraintsWithMultiplier:(CGFloat)multiplier {
-    
-    [self.view layoutIfNeeded];
-    
-    [UIView animateWithDuration:0.5f animations:^{
-        self.descriptionViewHeightConst.constant = CGRectGetHeight(self.view.bounds) * multiplier;
-        if (self.cityNameStandartHeightConst.active) {
-            self.cityNameStandartHeightConst.active = NO;
-            self.cityNameZoomedHeightConst.active = YES;
-        }
-        else {
-            self.cityNameZoomedHeightConst.active = NO;
-            self.cityNameStandartHeightConst.active = YES;
-        }
-        [self.view layoutIfNeeded];
-    }];
+- (BOOL)weatherWasUpdatedEarlierThanAnHourAgo:(DSCity *)city {
+    return [[NSDate date] timeIntervalSince1970] - [city.lastUpdatedWeatherDate timeIntervalSince1970] > weatherUpdateInterval ? YES : NO;
 }
 
 #pragma mark - Actions
@@ -236,14 +203,18 @@ static const CGFloat descriptionViewHeightMultiplierStateZoomed = 0.6f;
     
     [self.view layoutIfNeeded];
     
-    if (self.status == ViewControllerDescriptionViewStatusDefault) {
-        self.status = ViewControllerDescriptionViewStatusZoomed;
-        [self animateConstraintsWithMultiplier:descriptionViewHeightMultiplierStateZoomed];
-    }
-    else {
-        self.status = ViewControllerDescriptionViewStatusDefault;
-        [self animateConstraintsWithMultiplier:descriptionViewHeightMultiplierStateDefault];
-    }
+    [UIView animateWithDuration:0.5f animations:^{
+        self.status = self.status == ViewControllerDescriptionViewStatusDefault ? ViewControllerDescriptionViewStatusZoomed : ViewControllerDescriptionViewStatusDefault;
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)rowDidSelectedAtIndexPath:(NSIndexPath *)indexPath {
+    
+    self.selectedIndexPath = indexPath;
+    [self updateDescriptionViewWithIndexPath:indexPath];
+    DSCity *city = self.cities[indexPath.row];
+    [self syncWeatherWithServer:(DSCity *)city];
 }
 
 @end

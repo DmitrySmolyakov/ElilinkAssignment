@@ -17,9 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, retain) NSString *cityDescription;
 @property (nullable, nonatomic, retain) NSString *code;
-@property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSDate *lastUpdatedWeatherDate;
-@property (nullable, nonatomic, retain) NSString *weather;
+@property (nullable, nonatomic, retain) NSString *name;
+@property (nullable, nonatomic, retain) NSNumber *weather;
 
 @end
 
