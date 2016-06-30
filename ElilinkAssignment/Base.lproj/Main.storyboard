@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mtn-zh-p6V">
+                                <rect key="frame" x="0.0" y="20" width="600" height="350"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weather" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="PTE-dS-WJ6">
+                                        <rect key="frame" x="8" y="99" width="584" height="99"/>
+                                        <fontDescription key="fontDescription" name="Palatino-Italic" family="Palatino" pointSize="32"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="U0c-Lb-Vzx">
+                                        <rect key="frame" x="8" y="198" width="584" height="152"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <gestureRecognizers/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <fontDescription key="fontDescription" name="Futura-MediumItalic" family="Futura" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="cMG-yl-Nof" appends="YES" id="yuY-LU-ojt"/>
+                                        </connections>
+                                    </textView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City name and code" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ah4-Dc-VJw">
+                                        <rect key="frame" x="8" y="0.0" width="584" height="99"/>
+                                        <fontDescription key="fontDescription" name="Palatino-Bold" family="Palatino" pointSize="23"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstItem="PTE-dS-WJ6" firstAttribute="leading" secondItem="mtn-zh-p6V" secondAttribute="leading" constant="8" id="2RH-8j-642"/>
+                                    <constraint firstItem="ah4-Dc-VJw" firstAttribute="leading" secondItem="mtn-zh-p6V" secondAttribute="leading" constant="8" id="EjE-9X-v8L"/>
+                                    <constraint firstItem="U0c-Lb-Vzx" firstAttribute="leading" secondItem="mtn-zh-p6V" secondAttribute="leading" constant="8" id="Hu6-6C-i9g"/>
+                                    <constraint firstAttribute="height" constant="350" id="Hue-dq-9oy"/>
+                                    <constraint firstItem="U0c-Lb-Vzx" firstAttribute="top" secondItem="PTE-dS-WJ6" secondAttribute="bottom" id="PjE-6s-y1E"/>
+                                    <constraint firstAttribute="bottom" secondItem="U0c-Lb-Vzx" secondAttribute="bottom" id="Qjj-jd-PWe"/>
+                                    <constraint firstItem="U0c-Lb-Vzx" firstAttribute="top" secondItem="PTE-dS-WJ6" secondAttribute="bottom" id="XPK-jB-MJ6"/>
+                                    <constraint firstAttribute="trailing" secondItem="U0c-Lb-Vzx" secondAttribute="trailing" constant="8" id="ZXd-FA-mwx"/>
+                                    <constraint firstAttribute="trailing" secondItem="PTE-dS-WJ6" secondAttribute="trailing" constant="8" id="edD-Zz-hoR"/>
+                                    <constraint firstAttribute="trailing" secondItem="ah4-Dc-VJw" secondAttribute="trailing" constant="8" id="hf5-9I-zlR"/>
+                                    <constraint firstItem="PTE-dS-WJ6" firstAttribute="height" secondItem="ah4-Dc-VJw" secondAttribute="height" id="i8V-pF-4Ob"/>
+                                    <constraint firstItem="ah4-Dc-VJw" firstAttribute="top" secondItem="mtn-zh-p6V" secondAttribute="top" id="uIv-TR-9Nr"/>
+                                    <constraint firstItem="PTE-dS-WJ6" firstAttribute="top" secondItem="ah4-Dc-VJw" secondAttribute="bottom" id="y6q-VL-iXL"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Xsn-FH-r5l" appends="YES" id="NI8-MB-aBg"/>
+                                </connections>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zlD-pa-AO9">
+                                <rect key="frame" x="0.0" y="370" width="600" height="230"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="fEh-7e-b1X"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="v3s-4E-PPM"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="mtn-zh-p6V" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="3Gk-6o-rn3"/>
+                            <constraint firstAttribute="trailing" secondItem="mtn-zh-p6V" secondAttribute="trailing" id="5tx-dy-Vse"/>
+                            <constraint firstItem="zlD-pa-AO9" firstAttribute="top" secondItem="mtn-zh-p6V" secondAttribute="bottom" id="Lvv-EJ-frU"/>
+                            <constraint firstAttribute="trailing" secondItem="zlD-pa-AO9" secondAttribute="trailing" id="Qx7-Kb-09w"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="zlD-pa-AO9" secondAttribute="bottom" id="Wnt-BC-rf4"/>
+                            <constraint firstItem="ah4-Dc-VJw" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.165" id="Y4E-J5-pVs"/>
+                            <constraint firstItem="ah4-Dc-VJw" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.09" id="boz-Lb-vxc"/>
+                            <constraint firstItem="mtn-zh-p6V" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="hAF-UC-ue4"/>
+                            <constraint firstItem="zlD-pa-AO9" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ugR-rt-SBd"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="boz-Lb-vxc"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="cityNameCodeLabel" destination="ah4-Dc-VJw" id="ouR-a3-KpU"/>
+                        <outlet property="cityNameStandartHeightConst" destination="Y4E-J5-pVs" id="ZXZ-Qq-qQX"/>
+                        <outlet property="cityNameZoomedHeightConst" destination="boz-Lb-vxc" id="DJp-ld-GPo"/>
+                        <outlet property="descriptionTextView" destination="U0c-Lb-Vzx" id="44e-Cz-cIP"/>
+                        <outlet property="descriptionViewHeightConst" destination="Hue-dq-9oy" id="CKx-wj-QR8"/>
+                        <outlet property="tableView" destination="zlD-pa-AO9" id="L3N-Qc-duu"/>
+                        <outlet property="weatherLabel" destination="PTE-dS-WJ6" id="Efk-qE-3rd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Xsn-FH-r5l">
+                    <connections>
+                        <action selector="actionTap:" destination="BYZ-38-t0r" id="I2b-Eu-lVT"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="cMG-yl-Nof">
+                    <connections>
+                        <action selector="actionTap:" destination="BYZ-38-t0r" id="3fk-3r-RF3"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="457" y="439"/>
+        </scene>
+    </scenes>
+</document>
