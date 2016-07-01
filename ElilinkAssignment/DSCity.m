@@ -13,7 +13,7 @@
 
 @implementation DSCity
 
-- (void)createWithDictionary:(NSDictionary *)dictionary InContext:(NSManagedObjectContext *)localContext {
++ (void)createWithDictionary:(NSDictionary *)dictionary InContext:(NSManagedObjectContext *)localContext {
     
     DSCity *city = [DSCity MR_createEntityInContext:localContext];
     city.name = dictionary[@"name"];

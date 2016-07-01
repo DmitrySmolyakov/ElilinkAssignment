@@ -76,7 +76,7 @@ static NSString * const kFirstLaunch = @"firstLaunch";
     
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext * _Nonnull localContext) {
         for (NSDictionary *dictionary in citiesArrya) {
-            [[DSCity alloc] createWithDictionary:dictionary InContext:localContext];
+            [DSCity createWithDictionary:dictionary InContext:localContext];
         }
     }];
 }

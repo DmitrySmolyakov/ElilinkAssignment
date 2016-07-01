@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DSCity : NSManagedObject
 
-- (void)createWithDictionary:(NSDictionary *)dictionary InContext:(NSManagedObjectContext *)localContext;
++ (void)createWithDictionary:(NSDictionary *)dictionary InContext:(NSManagedObjectContext *)localContext;
 - (void)updateWeatherWithDictionary:(NSDictionary *)dictionary;
 
 @end

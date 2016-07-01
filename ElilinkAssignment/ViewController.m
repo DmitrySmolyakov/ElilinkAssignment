@@ -15,42 +15,39 @@
 //models
 #import "DSCity.h"
 
+typedef NS_ENUM(NSInteger, ViewControllerDescriptionViewStatus) {
+    ViewControllerDescriptionViewStatusDefault,
+    ViewControllerDescriptionViewStatusZoomed
+};
+
 @interface ViewController () <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *zoomedStateConst;
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *defaultStateConst;
-
-
-@property (assign, nonatomic) NSInteger status;
 
 @property (weak, nonatomic) IBOutlet UILabel *cityNameCodeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *weatherLabel;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) NSArray *cities;
+
+@property (assign, nonatomic) ViewControllerDescriptionViewStatus status;
+@property (strong, nonatomic) NSArray <DSCity *> *cities;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;
 
 @property (assign, nonatomic) UIInterfaceOrientation currentOrientation;
 
 @property (strong, nonatomic) OWMWeatherAPI *owmWeatherAPI;
 
-- (IBAction)actionTap:(UITapGestureRecognizer *)sender;
-
 @end
 
-typedef NS_ENUM(NSInteger, ViewControllerDescriptionViewStatus) {
-    ViewControllerDescriptionViewStatusDefault,
-    ViewControllerDescriptionViewStatusZoomed
-};
-
-static const NSInteger weatherUpdateInterval = 3600; //one hour
+static const NSInteger weatherUpdateInterval = 60 * 60; //one hour
 
 @implementation ViewController
 
 #pragma mark - Setters
 
-- (void)setStatus:(NSInteger)status {
+- (void)setStatus:(ViewControllerDescriptionViewStatus)status {
     _status = status;
     [self updateConstraintToState];
 }
@@ -101,21 +98,23 @@ static const NSInteger weatherUpdateInterval = 3600; //one hour
 
 - (void)updateConstraintToState {
     
-    if (self.status == ViewControllerDescriptionViewStatusDefault) {
+    switch (self.status) {
+        case ViewControllerDescriptionViewStatusDefault:
         for (NSLayoutConstraint *constraints in self.zoomedStateConst) {
             constraints.active = NO;
         }
         for (NSLayoutConstraint *constraints in self.defaultStateConst) {
             constraints.active = YES;
         }
-    }
-    else if (self.status == ViewControllerDescriptionViewStatusZoomed){
+        break;
+        case ViewControllerDescriptionViewStatusZoomed:
         for (NSLayoutConstraint *constraints in self.defaultStateConst) {
             constraints.active = NO;
         }
         for (NSLayoutConstraint *constraints in self.zoomedStateConst) {
             constraints.active = YES;
         }
+        break;
     }
 }
 
@@ -129,12 +128,8 @@ static const NSInteger weatherUpdateInterval = 3600; //one hour
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *identifier = @"identifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-    }
+    static NSString * const identifier = @"identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     
     [self configureCell:cell atIndexPath:indexPath];
     
@@ -178,9 +173,9 @@ static const NSInteger weatherUpdateInterval = 3600; //one hour
 - (void)syncWeatherWithServer:(DSCity *)city {
     
     if ([self weatherWasUpdatedEarlierThanAnHourAgo:(DSCity *)city]) {
-        NSString *cityName = [city.name stringByReplacingOccurrencesOfString:@" " withString:@""]; // check for space in name
+        NSString *cityName = [city.name stringByReplacingOccurrencesOfString:@" " withString:@""];
         [self.owmWeatherAPI currentWeatherByCityName:cityName withCallback:^(NSError *error, NSDictionary *result) {
-
+            
             [MagicalRecord saveWithBlock:^(NSManagedObjectContext * _Nonnull localContext) {
                 DSCity *cityInLocalContext = [DSCity MR_findFirstByAttribute:@"name" withValue:city.name inContext:localContext];
                 [cityInLocalContext updateWeatherWithDictionary:result];
